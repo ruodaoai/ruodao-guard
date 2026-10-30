@@ -1,0 +1,241 @@
+{
+  "id": "com.ruodao.guard",
+  "name": "若道安全卫士",
+  "version": "1.1.0",
+  "apiVersion": ">=0.1.0 <0.2.0",
+  "description": "绿色、简单、开放的安全插件：统一调度 Windows Defender 实时防护与病毒库，提供开放规则查杀、系统加固体检、隔离区与订阅式病毒库升级，并内置可对话调度全部能力的 AI 管家。无需驱动、无需内核、不驻留后台服务。",
+  "requires": {
+    "capabilities": {
+      "required": {
+        "commands": "0.1.0",
+        "code.execute": "0.1.0"
+      }
+    }
+  },
+  "permissions": [
+    "filesystem-read",
+    "filesystem-write",
+    "network",
+    "process"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "id": "com.ruodao.guard.doctor",
+        "title": "环境自检",
+        "description": "检查 PowerShell、管理员权限、数据目录、病毒库签名与 Defender 引擎是否可用。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "doctor"],
+          "cwd": ".",
+          "timeoutMs": 90000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.status",
+        "title": "获取安全状态与评分",
+        "description": "汇总 Defender、防火墙、UAC、SMBv1、自动运行、凭据保护、hosts、代理、病毒库、隔离区与最近扫描，返回 0-100 防护评分与待处理风险。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "status"],
+          "cwd": ".",
+          "timeoutMs": 120000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.scan",
+        "title": "病毒查杀",
+        "description": "使用开放病毒库（SHA-256 + 启发式规则）查杀文件，并检查进程、启动项、计划任务与 hosts。stdin 传 { mode: quick|deep|custom, paths?, maxFiles?, maxSeconds?, includeProcesses?, includeStartup? }。只报告，不自动删除。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "scan"],
+          "cwd": ".",
+          "timeoutMs": 300000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.audit",
+        "title": "系统加固体检",
+        "description": "逐项检查防护引擎、网络、系统加固与持久化项，返回 pass/warn/fail 明细与可一键修复项。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "audit"],
+          "cwd": ".",
+          "timeoutMs": 150000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.fix",
+        "title": "应用加固修复",
+        "description": "仅执行白名单内的加固修复，需管理员权限且必须显式确认。stdin 传 { fixIds: string[], confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "fix"],
+          "cwd": ".",
+          "timeoutMs": 180000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.startup",
+        "title": "检查启动项与计划任务",
+        "description": "列出开机启动项与非微软计划任务，并标记指向可疑命令的条目。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "startup"],
+          "cwd": ".",
+          "timeoutMs": 120000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.quarantine",
+        "title": "隔离文件",
+        "description": "重新计算哈希并移入隔离区，不直接删除。stdin 传 { items: [{ path, sha256?, name?, ruleId?, severity? }], confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "quarantine"],
+          "cwd": ".",
+          "timeoutMs": 180000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.quarantine-list",
+        "title": "列出隔离区",
+        "description": "返回隔离区条目（原始路径、哈希、大小、隔离时间）。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "quarantine-list"],
+          "cwd": ".",
+          "timeoutMs": 60000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.quarantine-restore",
+        "title": "恢复隔离文件",
+        "description": "将隔离文件还原到原始路径；原路径被占用时追加 .restored。stdin 传 { id, confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "quarantine-restore"],
+          "cwd": ".",
+          "timeoutMs": 60000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.quarantine-delete",
+        "title": "彻底删除隔离文件",
+        "description": "永久删除隔离区中的文件与记录。stdin 传 { id, confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "quarantine-delete"],
+          "cwd": ".",
+          "timeoutMs": 60000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.db-info",
+        "title": "查看病毒库信息",
+        "description": "返回当前生效病毒库、内置库、已安装库、签名与公钥指纹。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "db-info"],
+          "cwd": ".",
+          "timeoutMs": 60000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.db-update",
+        "title": "升级开放病毒库",
+        "description": "从 HTTPS 订阅源下载并校验（Ed25519 签名 + checksum）后安装。stdin 可传 { url, confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "db-update"],
+          "cwd": ".",
+          "timeoutMs": 180000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.db-import",
+        "title": "导入病毒库文件",
+        "description": "导入本地 JSON 病毒库并校验签名与 checksum。stdin 传 { file, confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "db-import"],
+          "cwd": ".",
+          "timeoutMs": 120000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.db-reset",
+        "title": "恢复内置病毒库",
+        "description": "移除已安装的订阅/导入库，回退到随插件发布的内置库。stdin 传 { confirm: true }。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "db-reset"],
+          "cwd": ".",
+          "timeoutMs": 60000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.defender-update",
+        "title": "升级 Defender 病毒库",
+        "description": "调用 Windows Update 升级 Microsoft Defender 官方病毒库。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "defender-update"],
+          "cwd": ".",
+          "timeoutMs": 330000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.defender-scan",
+        "title": "Defender 快速扫描",
+        "description": "调用 Microsoft Defender 执行快速扫描，返回耗时与最近威胁记录。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "defender-scan"],
+          "cwd": ".",
+          "timeoutMs": 660000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.ai-diagnose",
+        "title": "云端 AI 诊断",
+        "description": "把本机安全状态与加固体检结果交给若道云端大模型分析，返回安全评估、风险点与建议操作。stdin 可传 { focus, timeoutMs }。需要宿主注入模型或登录若道账号。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "ai-diagnose"],
+          "cwd": ".",
+          "timeoutMs": 240000
+        }
+      },
+      {
+        "id": "com.ruodao.guard.agent",
+        "title": "AI 管家",
+        "description": "对话式控制整个安全卫士：AI 可查询状态、体检、查杀、查看隔离区与病毒库，修复/隔离/删除等高风险操作先请求用户确认。stdin 传 { messages, approvals?, rejections?, context?, model? }，凭据由宿主注入。",
+        "action": {
+          "type": "process",
+          "command": "node",
+          "args": ["bin/guard.mjs", "agent"],
+          "cwd": ".",
+          "timeoutMs": 900000
+        }
+      }
+    ]
+  }
+}

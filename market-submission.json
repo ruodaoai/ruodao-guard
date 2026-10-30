@@ -1,0 +1,37 @@
+{
+  "displayName": "若道安全卫士",
+  "slug": "ruodao-guard",
+  "summary": "绿色、简单、开放的安全工作台：统一查看 Defender 与防火墙状态、按开放规则做静态查杀、系统加固体检、隔离区与可签名病毒库升级，还能用对话式 AI 管家调度全部能力。不装驱动、不驻留后台、扫描不上传文件。",
+  "description": "先把边界说清楚：这个插件不安装驱动、不注册内核服务、不常驻后台，也不接管第三方杀毒。主流病毒的常驻拦截交给 Windows Defender 或你已装的杀毒软件；插件负责的是「统一状态 + 可审计的静态查杀 + 系统加固 + 可签名病毒库升级」——把散落在系统各处的安全信息收进一个看得懂的界面。\n\n【概览】\n0–100 综合防护评分，实时防护 / 防火墙 / 病毒库 / 隔离区状态一览，列出待处理风险与最近的查杀、操作记录。第三方杀毒接管时 Defender 显示为被动模式是正常的——插件通过 Windows Security Center 的 productState 识别第三方实时防护，不会把「Defender 被动」误报成风险。\n\n【病毒查杀】\n快速、全盘、自定义目录三种模式；检测手段是三合一的：SHA-256 特征 + 开放正则规则 + 文件结构检查，同时检查进程、启动项、计划任务与 hosts 是否被改写。查杀只报告不删除，要不要处理由你决定。\n\n【防护中心：系统加固体检】\n逐项检查 Defender、防火墙、UAC、SMBv1、自动运行、WDigest、LSA 保护、RDP、Guest 账户、hosts、系统代理等配置，标出偏离建议的项；修复动作是固定脚本、仅管理员可执行、必须显式确认，需要重启的项会提前标注。\n\n【病毒库】\n内置开放库、HTTPS 订阅升级、本地导入、回退内置库四种来源，按版本号取新、拒绝降级；签名库用 Ed25519 校验，已签名的库必须验签通过才安装，未签名库需要你手动打开开关。同时也能一键升级 Microsoft Defender 官方病毒库、跑一次 Defender 快速扫描——两者独立：开放库用于插件自身的静态查杀，Defender 负责系统级实时防护。\n\n【隔离区】\n隔离前重新计算 SHA-256，哈希不一致立即还原；支持恢复与永久删除，绝不自动删除文件。拒绝符号链接、非普通文件、超过 1GB 的文件，也禁止移动 Windows 系统目录与插件自身数据。\n\n【AI 管家】\n用一句话说明你想干什么（「帮我看看这台机器有什么风险」「把刚才扫出来的可疑文件隔离掉」），AI 会挑命令、读结果、给结论。所有写入与高风险操作先返回待确认状态，你点确认它才继续。\n\n【数据与权限】\n数据目录 %LOCALAPPDATA%\\RuodaoGuard（db / quarantine / logs / data），升级重装都不删。扫描全程本地完成、不上传文件；只有你主动点「升级病毒库」时才访问 HTTPS 订阅源。审计日志写本地 JSONL，1MB 自动轮转。\n\n仅支持 Windows；非 Windows 平台只能查看界面与错误提示。",
+  "author": "Ruodao",
+  "category": "Utilities",
+  "tags": [
+    "安全",
+    "杀毒",
+    "Defender",
+    "病毒库",
+    "系统加固",
+    "隔离区",
+    "体检",
+    "AI 管家"
+  ],
+  "version": "1.1.0",
+  "repositoryUrl": "",
+  "sourceRef": "",
+  "pluginPath": "",
+  "permissions": [
+    "filesystem-read",
+    "filesystem-write",
+    "network",
+    "process"
+  ],
+  "capabilities": [
+    "commands",
+    "code.execute",
+    "ai-agent"
+  ],
+  "hasMcpServers": false,
+  "hasSkills": false,
+  "changelog": "1.1.0 新增 AI 安全管家：\n- 工作台新增「AI 管家」页：用一句话即可完成体检、查杀、启动项排查、隔离区与病毒库管理。\n- AI 调用插件全部能力，只读操作自动执行，修复 / 隔离 / 删除等高风险操作先展示参数并等待用户确认。\n- 复用若道模型库已配置的文本模型，无需额外配置密钥；插件独立版同样可用。\n- 新增环境自检命令，AI 与工作台可快速定位引擎不可用、权限不足、病毒库缺失等问题。",
+  "readme": "# 若道安全卫士（ruodao-guard）\n\n绿色、简单、开放的安全插件：把 Windows 自带的 Defender 实时防护、开放规则查杀、系统加固体检、隔离区和病毒库升级收进一个工作台。\n\n**安全边界**：本插件不安装驱动、不注册内核服务、不常驻后台，也不接管第三方杀毒。主流病毒的常驻拦截由 Windows Defender 或已安装的第三方杀毒负责；插件负责统一状态、可审计的静态查杀、系统加固与可签名病毒库升级。扫描全程本地完成，不上传文件；只有你主动点击「升级病毒库」时才会访问订阅源。\n\n## 功能\n\n| 模块 | 说明 |\n| --- | --- |\n| 概览 | 0–100 综合防护评分、实时防护/防火墙/病毒库/隔离区状态、待处理风险、最近查杀与操作记录 |\n| 病毒查杀 | 快速、全盘、自定义目录三种模式；SHA-256 特征 + 开放正则规则 + 文件结构检查；同时检查进程、启动项、计划任务与 hosts |\n| 防护中心 | Defender、防火墙、UAC、SMBv1、自动运行、WDigest、LSA、RDP、Guest、hosts、代理等逐项体检；白名单修复项需管理员权限并显式确认 |\n| 病毒库 | 内置开放库、订阅升级、本地导入、回退内置库；同时可升级/扫描 Microsoft Defender 官方病毒库 |\n| 隔离区 | 隔离前重新校验哈希，支持恢复与永久删除；不会自动删除文件 |\n| 设置 | 订阅源、未签名库开关、自定义公钥、查杀选项、版本升级与数据目录 |\n\n第三方杀毒接管时，Defender 显示为被动模式是正常行为。插件通过 Windows Security Center 的 `productState` 识别第三方实时防护，不会把「Defender 被动关闭」误报为系统风险。\n\n## 安装\n\n- 功能市场安装：搜索「安全卫士」。\n- 本地安装：将 `ruodao-guard.zip` 解压后的目录放入本机插件市场目录，或在插件管理中从本地安装 ZIP。\n\n安装后侧栏出现「安全卫士」，工作台路由为 `ruodao-guard`。\n\n## 权限\n\n| 权限 | 用途 |\n| --- | --- |\n| `filesystem-read` | 扫描用户选择的目录、读取启动项与病毒库 |\n| `filesystem-write` | 移动文件到隔离区、写入病毒库与审计日志 |\n| `network` | 仅在主动升级病毒库时访问 HTTPS 订阅源 |\n| `process` | 调用 PowerShell 读取系统状态、升级 Defender 病毒库、执行白名单加固修复 |\n\n数据目录：`%LOCALAPPDATA%\\RuodaoGuard`（可用 `RUODAO_GUARD_HOME` 覆盖），包含 `db`、`quarantine`、`logs`、`data`。插件升级或重装不会删除该目录。\n\n## 病毒库升级\n\n插件支持三种来源，按版本号取新，拒绝降级：\n\n1. **内置开放库**：随插件发布，格式 `ruodao-guard-signatures/1`，包含文件哈希特征与启发式规则。\n2. **HTTPS 订阅源**：工作台「病毒库 → 从订阅源升级」，或设置 `RUODAO_GUARD_DB_URL`。强制 HTTPS（本机调试允许 `http://127.0.0.1`）。\n3. **本地导入**：导入签名好的 JSON 文件，校验格式、Ed25519 签名与 SHA-256 checksum。\n\n已签名库默认必须校验 Ed25519 签名；内置公钥指纹见工作台。只有显式开启「允许未签名病毒库」后才会安装无签名文件。\n\n### 数据库格式\n\n```json\n{\n  \"format\": \"ruodao-guard-signatures/1\",\n  \"version\": \"2026.10.22.1\",\n  \"releasedAt\": \"2026-10-22T00:00:00.000Z\",\n  \"publisher\": \"Ruodao Security\",\n  \"rules\": {\n    \"hashes\": [\n      { \"sha256\": \"64 位小写十六进制\", \"name\": \"示例特征\", \"severity\": \"high\", \"tags\": [\"trojan\"] }\n    ],\n    \"heuristics\": [\n      {\n        \"id\": \"HEUR-EXAMPLE\",\n        \"title\": \"示例规则\",\n        \"severity\": \"medium\",\n        \"pattern\": \"powershell[^\\\\n]{0,80}-enc\",\n        \"flags\": \"i\",\n        \"extensions\": [\"ps1\", \"bat\"],\n        \"maxSize\": 2097152\n      }\n    ]\n  }\n}\n```\n\n### 签名工具\n\n```bash\n# 生成 Ed25519 密钥对（私钥务必离线保管，不要提交到仓库或打进 ZIP）\nnode tools/sign-db.mjs keygen --out ./keys\n\n# 为数据库生成 checksum + 签名\nnode tools/sign-db.mjs sign --db ./signatures.json --key ./keys/private.pem --out ./signatures.signed.json\n\n# 校验签名\nnode tools/sign-db.mjs verify --db ./signatures.signed.json --key ./keys/public.pem\n```\n\n若使用自定义密钥，在工作台「设置 → 高级：订阅公钥」填入对应公钥（PEM 或 Base64 DER），或设置 `RUODAO_GUARD_PUBLIC_KEY`。\n\n### Defender 官方病毒库\n\n「病毒库 → 升级 Defender 病毒库」会调用 `Update-MpSignature`；「快速扫描」调用 Defender 的快速扫描。它们与开放库相互独立：开放库用于插件自身的静态查杀，Defender 负责系统级实时防护与官方特征库。\n\n## 安全设计\n\n- 查杀只报告，不自动删除；隔离需确认，移动前重新计算 SHA-256，哈希不一致立即还原。\n- 隔离拒绝符号链接、非普通文件、超过 1GB 的文件，并禁止移动 Windows 系统目录、插件自身数据目录。\n- 加固修复是固定 PowerShell 脚本，不接受用户拼接；仅管理员可执行，必须确认，标注需重启项。\n- 病毒库拒绝版本降级；签名库使用 Ed25519；网络订阅强制 HTTPS，限制 20MB。\n- 日志写入本地 JSONL，日志轮转上限 1MB。\n\n## 已知限制\n\n- 无内核驱动，不能提供比 Defender/第三方杀毒更强的常驻拦截；插件不替代杀毒软件。\n- 开放库的内置特征以可审计规则与 EICAR 测试特征为主，主流病毒拦截依赖 Defender 官方病毒库或你配置的订阅库。\n- 自定义扫描受文件数、深度和时间预算限制，达到上限会在结果中明确提示。\n- 仅支持 Windows；非 Windows 平台仅能查看插件界面与错误提示。"
+}

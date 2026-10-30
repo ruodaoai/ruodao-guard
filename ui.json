@@ -1,0 +1,46 @@
+{
+  "route": "ruodao-guard",
+  "label": "安全卫士",
+  "description": "统一管理 Windows Defender 实时防护与病毒库，提供开放规则查杀、系统加固体检、隔离区与订阅升级，并内置可对话调度全部能力的 AI 管家。绿色、简单、开放。",
+  "icon": "ShieldCheck",
+  "version": "1.1.0",
+  "author": "Ruodao",
+  "capabilities": [
+    "commands",
+    "code.execute",
+    "virus-scan",
+    "realtime-protection",
+    "system-hardening",
+    "virus-db-update",
+    "quarantine",
+    "open-rules",
+    "ai-agent"
+  ],
+  "standalone": {
+    "exportable": true,
+    "shell": "generic",
+    "productName": "安全卫士",
+    "executableName": "RuodaoGuard",
+    "storageKeys": ["ruodao-guard-settings"]
+  },
+  "configFields": [
+    {
+      "key": "RUODAO_GUARD_DB_URL",
+      "label": "开源病毒库订阅源（HTTPS JSON，留空则仅用内置库）",
+      "placeholder": "https://example.com/ruodao-guard-signatures.json",
+      "secret": false
+    },
+    {
+      "key": "RUODAO_GUARD_ALLOW_UNSIGNED",
+      "label": "允许未签名订阅源（不推荐，填 1 开启）",
+      "placeholder": "0",
+      "secret": false
+    },
+    {
+      "key": "RUODAO_GUARD_PUBLIC_KEY",
+      "label": "订阅源 Ed25519 公钥（Base64 DER，留空使用内置公钥）",
+      "placeholder": "",
+      "secret": false
+    }
+  ]
+}

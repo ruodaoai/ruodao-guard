@@ -1,0 +1,146 @@
+{
+  "format": "ruodao-guard-signatures/1",
+  "version": "2026.10.22.1",
+  "releasedAt": "2026-10-22T00:00:00.000Z",
+  "publisher": "Ruodao Security",
+  "description": "开放病毒特征库：SHA-256 文件特征 + 可审计的启发式规则。规则只做本地静态匹配，不上传任何文件。",
+  "rules": {
+    "hashes": [
+      {
+        "sha256": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+        "name": "EICAR-Test-File",
+        "severity": "high",
+        "tags": ["test", "eicar"]
+      }
+    ],
+    "heuristics": [
+      {
+        "id": "RULE-EICAR",
+        "title": "EICAR 防病毒测试文件",
+        "severity": "high",
+        "pattern": "EICAR-STANDARD-ANTIVIRUS-TEST-FILE",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-PS-ENCODED",
+        "title": "PowerShell 编码命令",
+        "severity": "high",
+        "pattern": "powershell(?:\\.exe)?[^\\r\\n]{0,80}\\s-(?:enc|encodedcommand)\\b",
+        "flags": "i",
+        "extensions": ["ps1", "psm1", "bat", "cmd", "txt", "vbs", "js", "hta", "lnk", "xml"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-PS-DOWNLOAD",
+        "title": "脚本下载远程载荷",
+        "severity": "high",
+        "pattern": "(?:downloadstring|downloadfile|invoke-webrequest|start-bitstransfer|net\\.webclient)[^\\r\\n]{0,160}https?://",
+        "flags": "i",
+        "extensions": ["ps1", "psm1", "bat", "cmd", "txt", "vbs", "js", "hta", "lnk", "xml"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-IEX-CRADLE",
+        "title": "PowerShell 内存加载（IEX 下载执行）",
+        "severity": "high",
+        "pattern": "(?:iex|invoke-expression)[^\\r\\n]{0,120}(?:downloadstring|new-object\\s+net\\.webclient|frombase64string)",
+        "flags": "i",
+        "extensions": ["ps1", "psm1", "bat", "cmd", "txt", "vbs", "js", "hta", "lnk"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-MSHTA-REMOTE",
+        "title": "MSHTA 加载远程脚本",
+        "severity": "high",
+        "pattern": "mshta(?:\\.exe)?[^\\r\\n]{0,40}(?:https?://|javascript:)",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-REGSVR32-SCROBJ",
+        "title": "Regsvr32 绕过执行（Squiblydoo）",
+        "severity": "high",
+        "pattern": "regsvr32(?:\\.exe)?[^\\r\\n]{0,80}scrobj\\.dll",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-RUNDLL32-JS",
+        "title": "Rundll32 执行远程/脚本内容",
+        "severity": "high",
+        "pattern": "rundll32(?:\\.exe)?[^\\r\\n]{0,80}(?:javascript:|https?://)",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-CERTUTIL-DOWNLOAD",
+        "title": "Certutil 下载或解码载荷",
+        "severity": "high",
+        "pattern": "certutil(?:\\.exe)?[^\\r\\n]{0,80}-(?:urlcache|decode)",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-BITSADMIN",
+        "title": "BITSAdmin 后台传输载荷",
+        "severity": "medium",
+        "pattern": "bitsadmin(?:\\.exe)?[^\\r\\n]{0,80}/transfer",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-WMIC-PROCESS",
+        "title": "WMIC 创建进程",
+        "severity": "medium",
+        "pattern": "wmic(?:\\.exe)?[^\\r\\n]{0,80}process\\s+call\\s+create",
+        "flags": "i",
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-VBA-AUTOOPEN",
+        "title": "Office 宏自动执行入口",
+        "severity": "medium",
+        "pattern": "(?:autoopen|workbook_open|document_open|auto_open)\\s*\\(",
+        "flags": "i",
+        "extensions": ["vba", "bas", "vbs", "txt", "docm", "xlsm", "pptm"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-RANSOM-NOTE",
+        "title": "勒索信特征文本",
+        "severity": "high",
+        "pattern": "(?:your files (?:have been|are) encrypted|all your files are encrypted|how to decrypt|decrypt.{0,40}bitcoin|recover.{0,40}files.{0,40}key)",
+        "flags": "i",
+        "extensions": ["txt", "html", "htm", "md", "rtf"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-MINING-POOL",
+        "title": "挖矿矿池或矿工程序特征",
+        "severity": "high",
+        "pattern": "(?:stratum\\+tcp://|xmrig|minerd|--donate-level)",
+        "flags": "i",
+        "extensions": ["ps1", "bat", "cmd", "txt", "js", "json", "sh", "ini", "cfg"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-WSCRIPT-SHELL",
+        "title": "脚本调用系统 Shell 执行命令",
+        "severity": "medium",
+        "pattern": "(?:wscript\\.shell|shell\\.application)[^\\r\\n]{0,120}(?:run|exec)",
+        "flags": "i",
+        "extensions": ["vbs", "vbe", "js", "jse", "wsf", "hta", "txt"],
+        "maxSize": 1048576
+      },
+      {
+        "id": "RULE-DEFENSE-TAMPER",
+        "title": "篡改防御或删除系统备份",
+        "severity": "high",
+        "pattern": "(?:add-mppreference[^\\r\\n]{0,90}-exclusionpath|set-mppreference[^\\r\\n]{0,90}-disablerealtimemonitoring\\s+\\$true|vssadmin\\s+delete\\s+shadows|wbadmin\\s+delete\\s+catalog|bcdedit[^\\r\\n]{0,40}recoveryenabled\\s+no)",
+        "flags": "i",
+        "maxSize": 1048576
+      }
+    ]
+  }
+}

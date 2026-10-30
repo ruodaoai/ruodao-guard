@@ -1,0 +1,10 @@
+{
+  "name": "ruodao-guard",
+  "displayName": "若道安全卫士",
+  "version": "1.1.0",
+  "description": "绿色、简单、开放的安全插件：统一调度 Windows Defender 实时防护与病毒库，提供开放规则查杀、系统加固体检、隔离区与订阅式病毒库升级，并内置可对话调度全部能力的 AI 管家。无需驱动、无需内核、不驻留后台服务。",
+  "author": {
+    "name": "Ruodao"
+  },
+  "ui": "./ui.json"
+}
